@@ -19,10 +19,10 @@ class auth{
           const newUser = new users({ name, username, email, password: hashedPassword });
           await newUser.save();
 
-          res.status(200).json({ message: "Signup Success!" });
+          res.status(200).json({ response: "success" });
         } catch (error) {
           console.error("Signup failed:", error);
-          res.status(500).json({ message: "Failed to signup!", error: error.message });
+          res.status(500).json({ response: "Failed to signup!", error: error.message });
         }
       }
 }

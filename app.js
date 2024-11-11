@@ -17,5 +17,6 @@ app.use(upload.none());
 app.use('/auth', authRoutes)
 
 app.listen('3000', ()=>{
-    console.log("Server is listening on port 3000")
+    console.log("server is running on port 3000")
+    console.log("app url: http://127.0.0.1:3000")
 })

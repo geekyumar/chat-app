@@ -3,7 +3,13 @@ const path = require('path')
 const app = express()
 const conn = require('./app/config/mongoose')
 const authRoutes = require('./routes/auth')
+const appRoutes = require('./routes/web')
 const multer = require('multer');
+
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
+const authMiddleware = require('./app/middlewares/authMiddleware')
 
 app.use(express.static(path.join(__dirname, 'public/')));
 app.use(express.urlencoded({ extended: true }));
@@ -15,6 +21,7 @@ app.use(upload.none());
 
 // app routes
 app.use('/auth', authRoutes)
+app.use('/', appRoutes)
 
 app.listen('3000', ()=>{
     console.log("server is running on port 3000")

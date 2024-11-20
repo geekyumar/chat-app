@@ -1,6 +1,8 @@
+const cryptojs = require('crypto-js')
 const users = require('../../models/users')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
+const sessions = require('../../models/sessions')
 
 class auth{
     static async signup(req, res) {
@@ -20,7 +22,7 @@ class auth{
           const newUser = new users({ name, username, email, password: hashedPassword });
           await newUser.save();
 
-          res.status(200).json({ response: "success" });
+          res.status(200).json({ response: "signup_success" });
         } catch (error) {
           console.error("Signup failed:", error);
           res.status(500).json({ response: "Failed to signup!", error: error.message });
@@ -50,8 +52,23 @@ class auth{
           { expiresIn: '1h' }
         )
 
-        res.status(200).json({ message: "Login successful!", token });
+        const expiresIn = 3600
+        const sessId = cryptojs.MD5(username + token).toString()
+        const newSession = new sessions({ username, sessId, token, expiresIn })
 
+        if(await newSession.save()){
+          res.cookie('SESSID', sessId, {
+            httpOnly: true, // Prevent client-side access
+            secure: false,  // Use true in production with HTTPS
+            sameSite: 'Strict', // Ensures the cookie is only sent for same-site requests
+            encode: String,
+        }).status(200).json({ response: "login_success", token });
+        } else {
+            res.status(401).json({ message: "session generation failed." });
+        }
+
+
+       
       }
 }
 

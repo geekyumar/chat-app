@@ -1,23 +1,21 @@
-if (window.location.pathname == '/auth/signup') {
-    $('#signupForm').on('submit', (e) => {
+if (window.location.pathname == '/auth/login') {
+    $('#loginForm').on('submit', (e) => {
         e.preventDefault();
 
         const data = {
-            name: $('#name').val(),
             username: $('#username').val(),
-            email: $('#email').val(),
             password: $('#password').val()
         }
 
         $.ajax({
-            url: "/auth/signup",
+            url: "/auth/login",
             type: "POST",
             dataType: 'json',
             data: data,
 
             success: function (response) {
-                if (response.response == 'signup_success') {
-                    window.location.href="/auth/login"
+                if (response.response == 'login_success') {
+                    window.location.href="/"
                 }
             },
             error: function (error) {

@@ -4,8 +4,15 @@ const app = express()
 const conn = require('./app/config/mongoose')
 const authRoutes = require('./routes/auth')
 const appRoutes = require('./routes/web')
+const chatRoutes = require('./routes/chat')
+const { view } = require('./app/helpers/helpers')
 const multer = require('multer');
-
+const http = require('http')
+const server = http.createServer(app);
+const { Server } = require('socket.io')
+const io = new Server(server, {
+    path: '/chat',
+  });
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
@@ -22,8 +29,17 @@ app.use(upload.none());
 // app routes
 app.use('/auth', authRoutes)
 app.use('/', appRoutes)
+app.get('/chat', (req, res)=>{
+    res.sendFile(view('chat.html'))
+})
 
-app.listen('3000', ()=>{
+chatRoutes(io)
+// app.listen('3000', ()=>{
+//     console.log("server is running on port 3000")
+//     console.log("app url: http://127.0.0.1:3000")
+// })
+
+server.listen('3000', ()=>{
     console.log("server is running on port 3000")
     console.log("app url: http://127.0.0.1:3000")
 })

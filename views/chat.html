@@ -1,0 +1,57 @@
+<h2>Chat App</h2>
+<h2 id="messages"></h2>
+
+<input type="text" id="sampleMessage" placeholder="Type something...">
+<p>Typing: <span id="typingStatus">No typing</span></p>
+
+<button id="sendBtn">Receive</button>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+<script>
+    $(document).ready(() => {
+        let socket
+        if (!socket || !socket.connected) {
+      socket = io('http://localhost:3000', { path: '/chat' });
+      
+      socket.on('connect', () => {
+        console.log('Connected:', socket.id);
+      });
+    }
+
+      // Listen for the welcome message from the server
+      socket.on('welcome', (data) => {
+        $('#messages').append(`<p><strong>Server:</strong> ${data.message}</p>`);
+      });
+
+      socket.on('receive_message', (data) => {
+        $('#messages').append(`<p><strong>${data.user}:</strong> ${data.message}</p>`);
+      });
+
+      $('messageBar').on('input', ()=>{
+        socket.emit('typing')
+      })
+
+      $('#sampleMessage').on('input', function() {
+
+        $('#typingStatus').text('typing..'); 
+        socket.emit('typing', {message: 'typing..'})
+      });
+
+      socket.on('typing', (data)=>{
+        $('#typingStatus').text(data.message);
+      })
+
+    
+      $('#sendBtn').click(() => {
+        const message = $('#sampleMessage').val();
+        if (message) {
+          const userMessage = { user: 'User1', message }; 
+          socket.emit('send_message', userMessage);     
+          $('#messages').append(`<p><strong>You:</strong> ${message}</p>`);
+          $('#sampleMessage').val(''); 
+        }
+      });
+    });
+  </script>
+    

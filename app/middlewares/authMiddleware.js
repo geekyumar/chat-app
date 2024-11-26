@@ -1,18 +1,33 @@
 const sessions = require('../../models/sessions')
 
-const authMiddleware =  async (req, res, next)=>{
+module.exports = {
+    authMiddleware :  async (req, res, next)=>{
 
     try{
         const sessId = req.cookies.SESSID
         const ssidValidation = await sessions.findOne({ sessId })
         if(!ssidValidation){
             res.redirect('/auth/login')
+        } else {
+            next()
         }
-        next()
     } catch(error){
         res.status(401).json({error: "auth_failed"})
     }
    
-}
+},
 
-module.exports = authMiddleware
+loginMiddleware: async (req, res, next)=>{
+    try{
+        const sessId = req.cookies.SESSID
+        const ssidValidation = await sessions.findOne({ sessId })
+        if(ssidValidation){
+            res.redirect('/')
+        } else {
+            next()
+        }
+    } catch(error){
+        res.status(401).json({error: "auth_failed"})
+    }
+}
+}

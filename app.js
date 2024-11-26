@@ -6,6 +6,10 @@ const authRoutes = require('./routes/auth')
 const appRoutes = require('./routes/web')
 const chatRoutes = require('./routes/chat')
 const { view } = require('./app/helpers/helpers')
+
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
 const multer = require('multer');
 const http = require('http')
 const server = http.createServer(app);
@@ -16,7 +20,7 @@ const io = new Server(server, {
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
-const authMiddleware = require('./app/middlewares/authMiddleware')
+const { authMiddleware, loginMiddleware } = require('./app/middlewares/authMiddleware')
 
 app.use(express.static(path.join(__dirname, 'public/')));
 app.use(express.urlencoded({ extended: true }));
@@ -29,9 +33,6 @@ app.use(upload.none());
 // app routes
 app.use('/auth', authRoutes)
 app.use('/', appRoutes)
-app.get('/chat', (req, res)=>{
-    res.sendFile(view('chat.html'))
-})
 
 chatRoutes(io)
 // app.listen('3000', ()=>{

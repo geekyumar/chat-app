@@ -15,7 +15,7 @@ if (window.location.pathname == '/auth/login') {
 
             success: function (response) {
                 if (response.response == 'login_success') {
-                    window.location.href="/"
+                    window.location.href="/chat"
                 }
             },
             error: function (error) {

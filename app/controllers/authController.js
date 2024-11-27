@@ -70,6 +70,15 @@ class auth{
 
        
       }
+
+      static async logout(req, res) {
+        try {
+          res.clearCookie('SESSID');
+          res.redirect('/auth/login')
+        } catch (error) {
+          res.status(500).json({ message: "Internal server error" });
+        }
+      }
 }
 
 module.exports = auth

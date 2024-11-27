@@ -22,7 +22,7 @@ loginMiddleware: async (req, res, next)=>{
         const sessId = req.cookies.SESSID
         const ssidValidation = await sessions.findOne({ sessId })
         if(ssidValidation){
-            res.redirect('/')
+            res.redirect('/chat')
         } else {
             next()
         }

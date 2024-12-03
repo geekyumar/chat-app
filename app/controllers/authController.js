@@ -54,7 +54,7 @@ class auth{
 
         const expiresIn = 3600
         const sessId = cryptojs.MD5(username + token).toString()
-        const newSession = new sessions({ username, sessId, token, expiresIn })
+        const newSession = new sessions({ username, sessId, jwtToken: token, expiresIn })
 
         if(await newSession.save()){
           res.cookie('SESSID', sessId, {

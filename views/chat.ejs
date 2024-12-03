@@ -8,6 +8,123 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f2f5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    #openModalBtn {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    #openModalBtn:hover {
+        background-color: #0056b3;
+    }
+
+    /* Modal styling */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-content {
+        background-color: white;
+        width: 400px;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+
+    .modal-content h2 {
+        margin: 0;
+        margin-bottom: 15px;
+        font-size: 24px;
+        color: #333;
+    }
+
+    .search-box {
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        margin-bottom: 15px;
+        outline: none;
+        font-size: 14px;
+    }
+
+    .contact-list {
+        max-height: 200px;
+        overflow-y: auto;
+        margin-bottom: 15px;
+    }
+
+    .contact-item {
+        padding: 10px;
+        cursor: pointer;
+        border-radius: 10px;
+        transition: background-color 0.3s;
+    }
+
+    .contact-item:hover {
+        background-color: #f1f1f1;
+    }
+
+    .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .modal-footer button {
+        padding: 8px 16px;
+        margin-left: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .add-btn {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .add-btn:hover {
+        background-color: #218838;
+    }
+
+    .cancel-btn {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .cancel-btn:hover {
+        background-color: #c82333;
+    }
+</style>
+
 <head>
     <meta charset="utf-8">
     <!--  This file has been downloaded from bootdey.com @bootdey on twitter -->
@@ -34,20 +151,21 @@
                     <div class="row chat-wrapper">  
                         <div class="col-md-4">
                             <div class="compose-area"> 
-                                <a href="javascript:void(0);" class="btn btn-default"><i class="fa fa-edit"></i> New Chat</a>
+                                <a href="javascript:void(0);" id="openModalBtn" class="btn btn-default"><i class="fa fa-edit"></i> New Chat</a>
                             </div>
                             
                             <div>
                                 <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 550px;">
                                 <div class="chat-list-wrapper" style="overflow-y: auto; width: auto; height: 550px;">
                                     <ul class="chat-list">
+                                        <% for(i = 0; i<= chats.length-1; i++) { %>
                                         <li class="new">
                                             <span class="avatar available">
                                                 <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="avatar" class="img-circle">
                                             </span>
                                             <div class="body">
                                                 <div class="header">
-                                                    <span class="username">Gavin Free</span>
+                                                    <span class="username"><%= chats[i] %></span>
                                                     <small class="timestamp text-muted">
                                                         <i class="fa fa-clock-o"></i>1 secs ago
                                                     </small>
@@ -57,6 +175,8 @@
                                                 </p>
                                             </div>
                                         </li>  
+                                        <% } %>
+                                        
                                         <li class="active">
                                             <span class="avatar available">
                                                 <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="avatar" class="img-circle">
@@ -154,6 +274,26 @@
                                     <option value="kkara@ztapps.com">Kara Kingsley</option>
                                     <option value="barbs@ztapps.com">Barbara Dundkleman</option> 
                                 </select>
+                            </div>
+
+                            <!-- new chat page-->
+
+                            <div id="addChatModal" class="modal">
+                                <div class="modal-content">
+                                    <h2>New Chat</h2>
+                                    <input type="text" class="search-box" placeholder="Search contacts...">
+                                    <div class="contact-list">
+                                        <div class="contact-item">John Doe</div>
+                                        <div class="contact-item">Jane Smith</div>
+                                        <div class="contact-item">Alice Johnson</div>
+                                        <div class="contact-item">Bob Brown</div>
+                                        <!-- Add more contacts as needed -->
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="cancel-btn" id="cancelBtn">Cancel</button>
+                                        <button class="add-btn">Add</button>
+                                    </div>
+                                </div>
                             </div>
                             
                             <div>
@@ -304,6 +444,27 @@
 </script>
 </body>
 </html>
+
+<script>
+    const openModalBtn = document.getElementById('openModalBtn');
+    const addChatModal = document.getElementById('addChatModal');
+    const cancelBtn = document.getElementById('cancelBtn');
+
+    openModalBtn.addEventListener('click', () => {
+        addChatModal.style.display = 'flex';
+    });
+
+    cancelBtn.addEventListener('click', () => {
+        addChatModal.style.display = 'none';
+    });
+
+    // Close modal if clicked outside of content
+    window.addEventListener('click', (event) => {
+        if (event.target === addChatModal) {
+            addChatModal.style.display = 'none';
+        }
+    });
+</script>
 
 
 <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>

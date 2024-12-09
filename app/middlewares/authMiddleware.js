@@ -29,15 +29,17 @@ module.exports = {
 
 loginMiddleware: async (req, res, next)=>{
     try{
-        const sessId = req.cookies.SESSID
-        const ssidValidation = await sessions.findOne({ sessId })
-        if(ssidValidation){
-            res.redirect('/chat')
-        } else {
-            next()
+        const sessId = req.cookies.SESSID;
+        if (sessId) {
+            const ssidValidation = await sessions.findOne({ sessId });
+            if (ssidValidation) {
+                return res.redirect('/chat');
+            }
         }
+        next()
+
     } catch(error){
-        res.status(401).json({error: "auth_failed"})
+        return res.status(401).json({error: "auth_failed"})
     }
 }
 }

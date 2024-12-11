@@ -1,4 +1,17 @@
 module.exports = (io) => {
+  // const express = require('express')
+  // const router = express.Router()
+  // const chatServer = require('http').createServer()
+  // const { Server } = require('socket.io')
+
+  // const io = new Server(chatServer, {
+  //   path: '/chat'
+  // })
+
+  const { socketMiddleware } = require('../app/middlewares/authMiddleware')
+
+  io.use(socketMiddleware)
+
     io.on('connection', (socket) => {
       console.log('A user connected:', socket.id);
 
